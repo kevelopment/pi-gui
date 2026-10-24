@@ -188,6 +188,49 @@ test("supports keyboard shortcuts, slash menus, and topbar controls through the 
         ),
       )
       .toBe(!maximizedBefore);
+
+    if (process.platform === "linux") {
+      await expect(window.getByRole("button", { name: "Minimize window" })).toBeVisible();
+      await expect(
+        window.getByRole("button", { name: "Maximize or restore window" }),
+      ).toBeVisible();
+      await expect(window.getByRole("button", { name: "Close window" })).toBeVisible();
+
+      const linuxMenuState = await harness.electronApp.evaluate(({ BrowserWindow, Menu }) => ({
+        applicationMenu: Menu.getApplicationMenu(),
+        menuBarVisible: BrowserWindow.getAllWindows()[0]?.isMenuBarVisible(),
+      }));
+      expect(linuxMenuState.applicationMenu).toBeNull();
+      expect(linuxMenuState.menuBarVisible).toBe(false);
+
+      const maximizedBeforeButtonClick = await harness.electronApp.evaluate(
+        ({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.isMaximized() ?? false,
+      );
+      await window.getByRole("button", { name: "Maximize or restore window" }).click();
+      await expect
+        .poll(() =>
+          harness.electronApp.evaluate(
+            ({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.isMaximized() ?? false,
+          ),
+        )
+        .toBe(!maximizedBeforeButtonClick);
+
+      await window.getByRole("button", { name: "Minimize window" }).click();
+      await expect
+        .poll(() =>
+          harness.electronApp.evaluate(
+            ({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.isMinimized() ?? false,
+          ),
+        )
+        .toBe(true);
+      await harness.electronApp.evaluate(({ BrowserWindow }) => {
+        BrowserWindow.getAllWindows()[0]?.restore();
+      });
+
+      const windowClosed = window.waitForEvent("close");
+      await window.getByRole("button", { name: "Close window" }).click();
+      await windowClosed;
+    }
   } finally {
     await harness.close();
   }

@@ -61,6 +61,47 @@
   flex: none;
 }
 
+.topbar__window-controls {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-left: 4px;
+}
+
+.topbar__window-control {
+  -webkit-app-region: no-drag;
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--muted-strong);
+  cursor: pointer;
+}
+
+.topbar__window-control:hover {
+  background: var(--surface-overlay-muted);
+  color: var(--text-strong);
+}
+
+.topbar__window-control:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+.topbar__window-control > span {
+  margin-top: -5px;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.topbar__window-control--close:hover {
+  background: #c42b1c;
+  color: white;
+}
+
 .topbar__actions,
 .topbar__actions * {
   -webkit-app-region: no-drag;

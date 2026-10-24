@@ -470,7 +470,12 @@ function createWindow(): BrowserWindow {
     minHeight: 600,
     transparent: enableTransparency,
     vibrancy: process.platform === "darwin" && enableTransparency ? "under-window" : undefined,
-    titleBarStyle: "hiddenInset",
+    titleBarStyle:
+      process.platform === "darwin"
+        ? "hiddenInset"
+        : process.platform === "linux"
+          ? "hidden"
+          : "default",
     autoHideMenuBar: process.platform !== "darwin",
     backgroundColor: enableTransparency ? "#00000000" : currentWindowBackground(),
     trafficLightPosition: { x: 18, y: 18 },
@@ -817,6 +822,7 @@ async function runManualUpdateCheck(): Promise<void> {
 
 function installApplicationMenu(): void {
   if (process.platform !== "darwin") {
+    if (process.platform === "linux") Menu.setApplicationMenu(null);
     return;
   }
 
