@@ -27,7 +27,7 @@ import { augmentPosixPath } from "../scripts/augment-path.cjs";
 import { DesktopAppStore } from "./application/app-store";
 import { WindowOwner } from "./windows/window-owner";
 import { PendingComposerDraftFlusher } from "./windows/pending-draft-flush";
-import { windowChromeOptions } from "./windows/window-chrome";
+import { windowChromeArguments, windowChromeOptions } from "./windows/window-chrome";
 import { TurnCheckpointStore } from "./workbench/checkpoint-store";
 import {
   DesktopExtensionViewOwner,
@@ -482,6 +482,7 @@ function createWindow(): BrowserWindow {
       sandbox: true,
       // Keep hidden test windows responsive so Playwright exercises the same UI flows.
       backgroundThrottling: !backgroundTestMode,
+      additionalArguments: windowChromeArguments(process.platform),
     },
   });
 

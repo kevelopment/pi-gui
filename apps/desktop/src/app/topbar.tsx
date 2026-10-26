@@ -1,7 +1,7 @@
 import type { MouseEvent as ReactMouseEvent, ReactNode } from "react";
 import type { AppView, WorkspaceRecord, WorktreeRecord } from "../../contracts/desktop-state";
 import { getSidePanelToggleShortcutLabel, type PiDesktopApi } from "../../contracts/ipc";
-import { CloseIcon, MaximizeIcon, SidePanelIcon } from "../ui/icons";
+import { SidePanelIcon } from "../ui/icons";
 
 interface TopbarProps {
   readonly activeView: AppView;
@@ -88,38 +88,6 @@ export function Topbar({
               <span>{panelVisible ? "Hide side panel" : "Show side panel"}</span>
               <kbd>{getSidePanelToggleShortcutLabel(api.platform)}</kbd>
             </span>
-          </div>
-        ) : null}
-        {api.platform === "linux" ? (
-          <div className="topbar__window-controls" aria-label="Window controls">
-            <button
-              type="button"
-              aria-label="Minimize window"
-              className="topbar__window-control"
-              onClick={() => api.minimizeWindow()}
-            >
-              <span aria-hidden="true">−</span>
-            </button>
-            <button
-              type="button"
-              aria-label="Maximize or restore window"
-              className="topbar__window-control"
-              onClick={() => {
-                void api.toggleWindowMaximize().catch((error: unknown) => {
-                  console.error("[renderer] toggleWindowMaximize failed", error);
-                });
-              }}
-            >
-              <MaximizeIcon />
-            </button>
-            <button
-              type="button"
-              aria-label="Close window"
-              className="topbar__window-control topbar__window-control--close"
-              onClick={() => api.closeWindow()}
-            >
-              <CloseIcon />
-            </button>
           </div>
         ) : null}
       </div>

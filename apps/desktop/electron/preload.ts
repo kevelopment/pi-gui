@@ -11,6 +11,7 @@ import { PRELOAD_DEV_RELOAD_MARKER } from "./dev-reload-preload-probe";
 import {
   createDesktopCommandSubscription,
   desktopIpc,
+  drawWindowControlsArgument,
   type PiDesktopApi,
   type CustomProviderConfig,
   type CustomProviderProbeInput,
@@ -114,6 +115,7 @@ ipcRenderer.on(desktopIpc.appCommand, (_event, command: PiDesktopCommand) => {
 
 contextBridge.exposeInMainWorld("piApp", {
   platform: process.platform,
+  drawsWindowControls: process.argv.includes(drawWindowControlsArgument),
   versions: process.versions,
   ping: () => ipcRenderer.invoke(desktopIpc.ping) as Promise<string>,
   getState: () => ipcRenderer.invoke(desktopIpc.stateRequest) as Promise<DesktopAppState>,

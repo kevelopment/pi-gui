@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import { earlyModifierChords, getSidePanelTabCommand } from "../contracts/ipc";
 import App from "./app/App";
 import { RendererErrorBoundary } from "./app/desktop-recovery";
+import { WindowFrame } from "./app/window-titlebar";
 import { applyLastTheme } from "./ui/active-theme";
 import "./dev-reload-hook";
 import "./styles.css";
@@ -35,14 +36,16 @@ applyLastTheme();
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
-    <RendererErrorBoundary
-      onRelaunch={() => {
-        window.piApp?.relaunchApplication()?.catch((error: unknown) => {
-          console.error("[renderer] relaunchApplication failed", error);
-        });
-      }}
-    >
-      <App />
-    </RendererErrorBoundary>
+    <WindowFrame api={window.piApp}>
+      <RendererErrorBoundary
+        onRelaunch={() => {
+          window.piApp?.relaunchApplication()?.catch((error: unknown) => {
+            console.error("[renderer] relaunchApplication failed", error);
+          });
+        }}
+      >
+        <App />
+      </RendererErrorBoundary>
+    </WindowFrame>
   </React.StrictMode>,
 );

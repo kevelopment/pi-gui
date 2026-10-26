@@ -1354,7 +1354,7 @@
 
 .secondary-surface {
   min-height: 0;
-  height: 100vh;
+  height: 100%;
   display: grid;
   grid-template-columns: 248px minmax(0, 1fr);
   background: var(--window);

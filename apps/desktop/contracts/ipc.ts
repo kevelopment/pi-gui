@@ -692,8 +692,16 @@ export function isCloseFocusedSurfaceShortcut(input: {
   return input.key.toLowerCase() === "w" || input.code === "KeyW";
 }
 
+/**
+ * Main passes this to the renderer when the window is frameless and the app
+ * must draw its own title bar with minimize, maximize and close (Linux).
+ */
+export const drawWindowControlsArgument = "--pi-draw-window-controls";
+
 export interface PiDesktopApi {
   platform: NodeJS.Platform;
+  /** True when the window has no native title bar and the app draws its own. */
+  drawsWindowControls: boolean;
   versions: NodeJS.ProcessVersions;
   ping(): Promise<string>;
   getState(): Promise<DesktopAppState>;

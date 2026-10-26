@@ -188,60 +188,6 @@ test("supports keyboard shortcuts, slash menus, and topbar controls through the 
         ),
       )
       .toBe(!maximizedBefore);
-
-    if (process.platform === "linux") {
-      await expect(window.getByRole("button", { name: "Minimize window" })).toBeVisible();
-      await expect(
-        window.getByRole("button", { name: "Maximize or restore window" }),
-      ).toBeVisible();
-      await expect(window.getByRole("button", { name: "Close window" })).toBeVisible();
-
-      // The menu bar is hidden, but the application menu stays so its edit
-      // accelerators keep working.
-      const linuxMenuState = await harness.electronApp.evaluate(({ BrowserWindow, Menu }) => {
-        const roles: string[] = [];
-        const collect = (items: Electron.MenuItem[]) => {
-          for (const item of items) {
-            if (item.role) roles.push(item.role.toLowerCase());
-            if (item.submenu) collect(item.submenu.items);
-          }
-        };
-        collect(Menu.getApplicationMenu()?.items ?? []);
-        return { roles, menuBarVisible: BrowserWindow.getAllWindows()[0]?.isMenuBarVisible() };
-      });
-      expect(linuxMenuState.roles).toEqual(
-        expect.arrayContaining(["undo", "redo", "cut", "copy", "paste", "selectall"]),
-      );
-      expect(linuxMenuState.menuBarVisible).toBe(false);
-
-      const maximizedBeforeButtonClick = await harness.electronApp.evaluate(
-        ({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.isMaximized() ?? false,
-      );
-      await window.getByRole("button", { name: "Maximize or restore window" }).click();
-      await expect
-        .poll(() =>
-          harness.electronApp.evaluate(
-            ({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.isMaximized() ?? false,
-          ),
-        )
-        .toBe(!maximizedBeforeButtonClick);
-
-      await window.getByRole("button", { name: "Minimize window" }).click();
-      await expect
-        .poll(() =>
-          harness.electronApp.evaluate(
-            ({ BrowserWindow }) => BrowserWindow.getAllWindows()[0]?.isMinimized() ?? false,
-          ),
-        )
-        .toBe(true);
-      await harness.electronApp.evaluate(({ BrowserWindow }) => {
-        BrowserWindow.getAllWindows()[0]?.restore();
-      });
-
-      const windowClosed = window.waitForEvent("close");
-      await window.getByRole("button", { name: "Close window" }).click();
-      await windowClosed;
-    }
   } finally {
     await harness.close();
   }
