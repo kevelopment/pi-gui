@@ -27,6 +27,7 @@ import { augmentPosixPath } from "../scripts/augment-path.cjs";
 import { DesktopAppStore } from "./application/app-store";
 import { WindowOwner } from "./windows/window-owner";
 import { PendingComposerDraftFlusher } from "./windows/pending-draft-flush";
+import { windowChromeOptions } from "./windows/window-chrome";
 import { TurnCheckpointStore } from "./workbench/checkpoint-store";
 import {
   DesktopExtensionViewOwner,
@@ -470,15 +471,8 @@ function createWindow(): BrowserWindow {
     minHeight: 600,
     transparent: enableTransparency,
     vibrancy: process.platform === "darwin" && enableTransparency ? "under-window" : undefined,
-    titleBarStyle:
-      process.platform === "darwin"
-        ? "hiddenInset"
-        : process.platform === "linux"
-          ? "hidden"
-          : "default",
-    autoHideMenuBar: process.platform !== "darwin",
+    ...windowChromeOptions(process.platform),
     backgroundColor: enableTransparency ? "#00000000" : currentWindowBackground(),
-    trafficLightPosition: { x: 18, y: 18 },
     show: false,
     icon: appIcon,
     webPreferences: {
@@ -822,7 +816,6 @@ async function runManualUpdateCheck(): Promise<void> {
 
 function installApplicationMenu(): void {
   if (process.platform !== "darwin") {
-    if (process.platform === "linux") Menu.setApplicationMenu(null);
     return;
   }
 

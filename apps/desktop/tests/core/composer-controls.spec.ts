@@ -196,11 +196,22 @@ test("supports keyboard shortcuts, slash menus, and topbar controls through the 
       ).toBeVisible();
       await expect(window.getByRole("button", { name: "Close window" })).toBeVisible();
 
-      const linuxMenuState = await harness.electronApp.evaluate(({ BrowserWindow, Menu }) => ({
-        applicationMenu: Menu.getApplicationMenu(),
-        menuBarVisible: BrowserWindow.getAllWindows()[0]?.isMenuBarVisible(),
-      }));
-      expect(linuxMenuState.applicationMenu).toBeNull();
+      // The menu bar is hidden, but the application menu stays so its edit
+      // accelerators keep working.
+      const linuxMenuState = await harness.electronApp.evaluate(({ BrowserWindow, Menu }) => {
+        const roles: string[] = [];
+        const collect = (items: Electron.MenuItem[]) => {
+          for (const item of items) {
+            if (item.role) roles.push(item.role.toLowerCase());
+            if (item.submenu) collect(item.submenu.items);
+          }
+        };
+        collect(Menu.getApplicationMenu()?.items ?? []);
+        return { roles, menuBarVisible: BrowserWindow.getAllWindows()[0]?.isMenuBarVisible() };
+      });
+      expect(linuxMenuState.roles).toEqual(
+        expect.arrayContaining(["undo", "redo", "cut", "copy", "paste", "selectall"]),
+      );
       expect(linuxMenuState.menuBarVisible).toBe(false);
 
       const maximizedBeforeButtonClick = await harness.electronApp.evaluate(
