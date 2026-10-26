@@ -67,6 +67,16 @@ test("every screen has window controls on Linux and none elsewhere", async () =>
     await createNamedThread(window, "Window controls session");
     await expectWindowControls(window);
 
+    // Dialogs open below the bar, so it never covers their content.
+    await window.keyboard.press(desktopShortcut("K"));
+    await expect(window.getByTestId("command-palette")).toBeVisible();
+    const backdropTop = await window
+      .locator(".command-palette-backdrop")
+      .evaluate((element) => element.getBoundingClientRect().top);
+    expect(backdropTop).toBe(drawsWindowControls ? 32 : 0);
+    await window.keyboard.press("Escape");
+    await expect(window.getByTestId("command-palette")).toHaveCount(0);
+
     await window.keyboard.press(desktopShortcut(","));
     await expect(window.getByTestId("settings-surface")).toBeVisible();
     await expectWindowControls(window);

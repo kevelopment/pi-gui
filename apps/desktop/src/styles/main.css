@@ -1312,7 +1312,7 @@
 
 .image-viewer {
   position: fixed;
-  inset: 0;
+  inset: var(--window-titlebar-height) 0 0;
   z-index: 110;
   display: grid;
   place-items: center;
@@ -1326,7 +1326,7 @@
 
 .image-viewer__image {
   max-width: 100%;
-  max-height: calc(100vh - 96px);
+  max-height: calc(100vh - var(--window-titlebar-height) - 96px);
   object-fit: contain;
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-xl);
@@ -2889,7 +2889,7 @@
 
 .extension-dialog-backdrop {
   position: fixed;
-  inset: 0;
+  inset: var(--window-titlebar-height) 0 0;
   z-index: 30;
   display: grid;
   place-items: center;
@@ -2910,7 +2910,7 @@
 }
 
 .custom-endpoint-dialog {
-  max-height: calc(100vh - 48px);
+  max-height: calc(100vh - var(--window-titlebar-height) - 48px);
   display: flex;
   flex-direction: column;
   gap: 0;
@@ -2999,7 +2999,7 @@
 
 .tree-modal-backdrop {
   position: fixed;
-  inset: 0;
+  inset: var(--window-titlebar-height) 0 0;
   z-index: 34;
   display: grid;
   place-items: center;
@@ -3010,7 +3010,7 @@
 
 .tree-modal {
   width: min(860px, 100%);
-  max-height: min(760px, calc(100vh - 48px));
+  max-height: min(760px, calc(100vh - var(--window-titlebar-height) - 48px));
   display: grid;
   gap: 16px;
   padding: 22px;
