@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { PiDesktopApi } from "../../contracts/ipc";
+import { useTranslation } from "../i18n";
 import { CloseIcon } from "../ui/icons";
 
 /**
@@ -14,16 +15,21 @@ export function WindowFrame({
   readonly api: PiDesktopApi | undefined;
   readonly children: ReactNode;
 }) {
+  const { t } = useTranslation();
   if (!api?.drawsWindowControls) {
     return children;
   }
   return (
     <div className="window-frame">
       <div className="window-titlebar" data-testid="window-titlebar">
-        <div className="window-titlebar__controls" role="group" aria-label="Window controls">
+        <div
+          className="window-titlebar__controls"
+          role="group"
+          aria-label={t("windowControls.label")}
+        >
           <button
             type="button"
-            aria-label="Minimize window"
+            aria-label={t("windowControls.minimize")}
             className="window-titlebar__control"
             onClick={() => api.minimizeWindow()}
           >
@@ -33,7 +39,7 @@ export function WindowFrame({
           </button>
           <button
             type="button"
-            aria-label="Maximize or restore window"
+            aria-label={t("windowControls.maximize")}
             className="window-titlebar__control"
             onClick={() => {
               void api.toggleWindowMaximize().catch((error: unknown) => {
@@ -55,7 +61,7 @@ export function WindowFrame({
           </button>
           <button
             type="button"
-            aria-label="Close window"
+            aria-label={t("windowControls.close")}
             className="window-titlebar__control window-titlebar__control--close"
             onClick={() => api.closeWindow()}
           >
